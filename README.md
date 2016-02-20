@@ -1,7 +1,7 @@
-Netensia - Common
+Role Skeleton
 =================
 
-Install and configure basics packages that must be on all netensia's servers
+This is the basics tree of ansible roles
 
 Role Variables
 --------------
