@@ -1,7 +1,8 @@
-Role Skeleton
+Nested-virt
 =================
 
-This is the basics tree of ansible roles
+Ansible role that put kvm host into nested mode. Like this we can do 
+virtualisation into virtualisation
 
 Role Variables
 --------------
