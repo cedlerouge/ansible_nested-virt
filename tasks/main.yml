@@ -1,3 +1,44 @@
 ---
 - name: os family specificities
   include: '{{ ansible_os_family | lower }}.yml'
+
+- name: check if virtualisation is possible on server
+  command: /bin/grep  vmx /proc/cpuinfo
+  register: kvmok
+  ignore_errors: True
+  when: ansible_os_family == "Debian"
+
+- name: check if virtualisation is possible on server
+  command: /usr/bin/grep vmx /proc/cpuinfo
+  register: kvmok
+  ignore_errors: True
+  when: ansible_os_family == "RedHat"
+    
+- name: End playbook if no virtualisation
+  meta: end_play
+  when: kvmok|failed
+
+- name: update default grub file
+  replace: 
+    destfile: /etc/default/grub
+    regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*kvm.*).*)(\")$'
+    replace: '\1 kvm-intel.nested=1 \2'
+
+- name: add modprobe file
+  copy: 
+    src: kvm-intel.conf
+    dest: /etc/modprobe.d/kvm-intel.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: unload module kvm-intel
+  modprobe:
+    name: kvm-intel
+    state: absent
+
+- name: load module kvm-intel
+  modprobe: 
+    name: kvm-intel
+    state: present
+

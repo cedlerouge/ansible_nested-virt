@@ -1,2 +1,2 @@
 - name: centos debug
-  debug: msg="Install via yum tools"
+  debug: msg="Centos Os"
