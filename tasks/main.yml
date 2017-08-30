@@ -3,16 +3,10 @@
   include: '{{ ansible_os_family | lower }}.yml'
 
 - name: check if virtualisation is possible on server
-  command: /bin/grep  vmx /proc/cpuinfo
+  shell: |
+    `which egrep` '(vmx|svm)' /proc/cpuinfo
   register: kvmok
   ignore_errors: True
-  when: ansible_os_family == "Debian"
-
-- name: check if virtualisation is possible on server
-  command: /usr/bin/grep vmx /proc/cpuinfo
-  register: kvmok
-  ignore_errors: True
-  when: ansible_os_family == "RedHat"
     
 - name: End playbook if no virtualisation
   meta: end_play
